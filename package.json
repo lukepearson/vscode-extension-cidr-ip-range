@@ -38,6 +38,10 @@
               "type": "boolean",
               "description": "Enables a CodeLens with an action to copy the cidr range information to the clipboard"
             },
+            "enableDecorator": {
+              "type": "boolean",
+              "description": "Enables the inline decorator that shows how many IP addresses are in a range"
+            },
             "codeLensFormat": {
               "type": "enum",
               "enum": [
@@ -51,6 +55,7 @@
         "additionalProperties": false,
         "default": {
           "enableCodeLens": false,
+          "enableDecorator": true,
           "codeLensFormat": "json"
         }
       }
