@@ -102,15 +102,17 @@ const onUpdate = (): CodeLens[] => {
     const s = length === 1 ? "" : "es";
     const range = new Range(startPos, endPos);
 
+    const renderOptions = {
+      after: {
+        color: "#666",
+        contentText: ` [${length} address${s}]`,
+      },
+    };
+
     decorations.push({
       range,
       hoverMessage: hover,
-      renderOptions: {
-        after: {
-          color: "#666",
-          contentText: ` [${length} address${s}]`,
-        },
-      },
+      renderOptions: isDecoratorEnabled() ? renderOptions : undefined,
     });
 
     if (codeLensFormat() === "table") {
@@ -186,6 +188,10 @@ export function activate(context: ExtensionContext) {
 
 const isCodeLensEnabled = (): boolean => {
   return workspace.getConfiguration(packageName).get("enableCodeLens", false);
+};
+
+const isDecoratorEnabled = (): boolean => {
+  return workspace.getConfiguration(packageName).get("enableDecorator", true);
 };
 
 const codeLensFormat = (): CodeLensFormat => {

@@ -10,6 +10,10 @@ Tooltip provides more detailed information on hover.
 
 Uses the [cidr-regex](https://www.npmjs.com/package/cidr-regex) and [ip](https://www.npmjs.com/package/ip) libraries to find ipv4 cidr ranges in open documents and display information about them.
 
+## Options
+
+### Toggle codelens
+
 There is a codelens action to copy the information to the clipboard, which can be enabled by adding the following to your settings.json
 
 ```json
@@ -19,6 +23,8 @@ There is a codelens action to copy the information to the clipboard, which can b
 },
 ```
 
+### Change codelens copy format
+
 You can alternatively copy the data as it appears in the table by changing the `codeLensFormat` to "table"
 
 ```json
@@ -26,6 +32,39 @@ You can alternatively copy the data as it appears in the table by changing the `
   "enableCodeLens": true,
   "codeLensFormat": "table"
 },
+```
+
+### Toggle inline decorator
+
+You can enable or disable the inline decorator which shows how many IP addresses are in a range
+
+```json
+"cidr-ip-range": {
+  "enableDecorator": false,
+},
+```
+
+Full list of configuration options
+
+```json
+"cidr-ip-range": {
+  "enableCodeLens": {
+    "type": "boolean",
+    "description": "Enables a CodeLens with an action to copy the cidr range information to the clipboard"
+  },
+  "enableDecorator": {
+    "type": "boolean",
+    "description": "Enables the inline decoration that shows how many IP addresses are in the range"
+  },
+  "codeLensFormat": {
+    "type": "enum",
+    "enum": [
+      "json",
+      "table"
+    ],
+    "description": "Sets the format for which to copy the cidr range information"
+  }
+}
 ```
 
 ## Still to do
@@ -45,3 +84,9 @@ Added codelens ability to copy data to clipboard, suggested by Thomas Schlesinge
 ### 0.0.5
 
 Added copy to clipboard format types (json / table)
+
+### 0.0.6
+
+Added configuration option to toggle the inline decoration
+
+[Issue #1](https://github.com/lukepearson/vscode-extension-cidr-ip-range/issues/1) - Reported by Jake Ginnivan
