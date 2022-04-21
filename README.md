@@ -17,9 +17,9 @@ Uses the [cidr-regex](https://www.npmjs.com/package/cidr-regex) and [ip](https:/
 There is a codelens action to copy the information to the clipboard, which can be enabled by adding the following to your settings.json
 
 ```json
-"cidr-ip-range": {
-  "enableCodeLens": true,
-  "codeLensFormat": "json"
+{
+  "cidr-ip-range.enableCodeLens": true,
+  "cidr-ip-range.codeLensFormat": "json"
 },
 ```
 
@@ -28,9 +28,9 @@ There is a codelens action to copy the information to the clipboard, which can b
 You can alternatively copy the data as it appears in the table by changing the `codeLensFormat` to "table"
 
 ```json
-"cidr-ip-range": {
-  "enableCodeLens": true,
-  "codeLensFormat": "table"
+{
+  "cidr-ip-range.enableCodeLens": true,
+  "cidr-ip-range.codeLensFormat": "table"
 },
 ```
 
@@ -39,30 +39,33 @@ You can alternatively copy the data as it appears in the table by changing the `
 You can enable or disable the inline decorator which shows how many IP addresses are in a range
 
 ```json
-"cidr-ip-range": {
-  "enableDecorator": false,
+{
+  "cidr-ip-range.enableDecorator": false,
 },
 ```
 
 Full list of configuration options
 
 ```json
-"cidr-ip-range": {
-  "enableCodeLens": {
+{
+  "cidr-ip-range.enableCodeLens": {
     "type": "boolean",
-    "description": "Enables a CodeLens with an action to copy the cidr range information to the clipboard"
+    "description": "Enables a CodeLens with an action to copy the cidr range information to the clipboard",
+    "default": false
   },
-  "enableDecorator": {
+  "cidr-ip-range.enableDecorator": {
     "type": "boolean",
-    "description": "Enables the inline decoration that shows how many IP addresses are in the range"
+    "description": "Enables the inline decorator that shows how many IP addresses are in a range",
+    "default": true
   },
-  "codeLensFormat": {
-    "type": "enum",
+  "cidr-ip-range.codeLensFormat": {
+    "type": "string",
     "enum": [
       "json",
       "table"
     ],
-    "description": "Sets the format for which to copy the cidr range information"
+    "default": "json",
+    "description": "Sets which format the cidr range information will be copied as"
   }
 }
 ```
@@ -90,3 +93,7 @@ Added copy to clipboard format types (json / table)
 Added configuration option to toggle the inline decoration
 
 [Issue #1](https://github.com/lukepearson/vscode-extension-cidr-ip-range/issues/1) - Reported by Jake Ginnivan
+
+### 0.0.7
+
+Fixed configuration options defaults and removed typo in copy to table

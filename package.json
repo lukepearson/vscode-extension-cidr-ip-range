@@ -33,31 +33,27 @@
         "title": "cidr-ip-range",
         "order": 1,
         "properties": {
-          "cidr-ip-range": {
-            "enableCodeLens": {
-              "type": "boolean",
-              "description": "Enables a CodeLens with an action to copy the cidr range information to the clipboard"
-            },
-            "enableDecorator": {
-              "type": "boolean",
-              "description": "Enables the inline decorator that shows how many IP addresses are in a range"
-            },
-            "codeLensFormat": {
-              "type": "enum",
-              "enum": [
-                "json",
-                "table"
-              ],
-              "description": "Sets the format to copy the cidr range information as"
-            }
+          "cidr-ip-range.enableCodeLens": {
+            "type": "boolean",
+            "description": "Enables a CodeLens with an action to copy the cidr range information to the clipboard",
+            "default": false
+          },
+          "cidr-ip-range.enableDecorator": {
+            "type": "boolean",
+            "description": "Enables the inline decorator that shows how many IP addresses are in a range",
+            "default": true
+          },
+          "cidr-ip-range.codeLensFormat": {
+            "type": "string",
+            "enum": [
+              "json",
+              "table"
+            ],
+            "default": "json",
+            "description": "Sets the format to copy the cidr range information as"
           }
         },
-        "additionalProperties": false,
-        "default": {
-          "enableCodeLens": false,
-          "enableDecorator": true,
-          "codeLensFormat": "json"
-        }
+        "additionalProperties": false
       }
     ]
   },

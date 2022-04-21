@@ -115,7 +115,7 @@ const onUpdate = (): CodeLens[] => {
       renderOptions: isDecoratorEnabled() ? renderOptions : undefined,
     });
 
-    if (codeLensFormat() === "table") {
+    if (isCodeLensEnabled() && codeLensFormat() === "table") {
       codelenses.push({
         range,
         isResolved: false,
@@ -125,7 +125,7 @@ const onUpdate = (): CodeLens[] => {
           arguments: [
             `Network address ${networkAddress}
 Addresses in range ${String(length)}
-Hosts in range 254 ${String(numHosts)}
+Hosts in range ${String(numHosts)}
 First host in range ${firstAddress}
 Last host in range ${lastAddress}
 Broadcast address ${broadcastAddress}
@@ -135,7 +135,7 @@ Subnet mask ${subnetMask}`,
       });
     }
 
-    if (codeLensFormat() === "json") {
+    if (isCodeLensEnabled() && codeLensFormat() === "json") {
       codelenses.push({
         range,
         isResolved: false,
@@ -216,9 +216,6 @@ export class CidrCodelensProvider implements CodeLensProvider {
     _document: TextDocument,
     _cancellationToken: CancellationToken
   ): CodeLens[] | Thenable<CodeLens[]> {
-    if (isCodeLensEnabled()) {
-      return onUpdate();
-    }
-    return [];
+    return onUpdate();
   }
 }
