@@ -38,14 +38,6 @@ const rangeDecoration = window.createTextEditorDecorationType({
     contentText: "",
   },
 });
-const invalidRangeDecoration = window.createTextEditorDecorationType({
-  borderWidth: "1px",
-  borderStyle: "dotted",
-  overviewRulerColor: "red",
-  overviewRulerLane: OverviewRulerLane.Right,
-  light: { borderColor: "lightred" },
-  dark: { borderColor: "darkred" },
-});
 const diagnostics: DiagnosticCollection =
   languages.createDiagnosticCollection("cidr-ip-range");
 const header = `
@@ -87,7 +79,6 @@ const onUpdate = (): CodeLens[] => {
   const doc = window.activeTextEditor.document;
   const text = doc.getText();
   const decorations: DecorationOptions[] = [];
-  const invalidDecorations: DecorationOptions[] = [];
   const codelenses: CodeLens[] = [];
   const diagnosticEntries: Diagnostic[] = [];
 
@@ -197,10 +188,6 @@ Subnet mask ${subnetMask}`,
 
   diagnostics.set(doc.uri, diagnosticEntries);
   window.activeTextEditor.setDecorations(rangeDecoration, decorations);
-  window.activeTextEditor.setDecorations(
-    invalidRangeDecoration,
-    invalidDecorations
-  );
   clearDebounce();
   return codelenses;
 };
