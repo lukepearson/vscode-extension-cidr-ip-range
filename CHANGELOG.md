@@ -29,3 +29,7 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 ## [0.0.7]
 
 - Fixed configuration options defaults and removed typo in copy to table
+
+## [0.0.8]
+
+- Added strict mode, suggested by makeacode
