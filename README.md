@@ -44,19 +44,34 @@ You can enable or disable the inline decorator which shows how many IP addresses
 },
 ```
 
+### Toggle strict mode
+
+You can enable or disable strict CIDR notation, which requires the CIDR range to use the first IP address in the range. Enabling this option will highlight invalid ranges
+
+```json
+{
+  "cidr-ip-range.enableStrict": true,
+},
+```
+
 Full list of configuration options
 
 ```json
 {
   "cidr-ip-range.enableCodeLens": {
     "type": "boolean",
-    "description": "Enables a CodeLens with an action to copy the cidr range information to the clipboard",
+    "description": "Enables a CodeLens with an action to copy the CIDR range information to the clipboard",
     "default": false
   },
   "cidr-ip-range.enableDecorator": {
     "type": "boolean",
     "description": "Enables the inline decorator that shows how many IP addresses are in a range",
     "default": true
+  },
+  "cidr-ip-range.enableStrict": {
+    "type": "boolean",
+    "description": "Requires the CIDR range to use the first IP in the range e.g. 10.82.184.0/22 instead of 10.82.187.0/22",
+    "default": false
   },
   "cidr-ip-range.codeLensFormat": {
     "type": "string",
@@ -65,7 +80,7 @@ Full list of configuration options
       "table"
     ],
     "default": "json",
-    "description": "Sets which format the cidr range information will be copied as"
+    "description": "Sets which format the CIDR range information will be copied as"
   }
 }
 ```
@@ -97,3 +112,7 @@ Added configuration option to toggle the inline decoration
 ### 0.0.7
 
 Fixed configuration options defaults and removed typo in copy to table
+
+### 0.0.8
+
+Added strict mode, suggested by makeacode

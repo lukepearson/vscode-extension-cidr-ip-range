@@ -4,12 +4,16 @@ import {
   CodeLensProvider,
   commands,
   DecorationOptions,
+  Diagnostic,
+  DiagnosticCollection,
+  DiagnosticSeverity,
   env,
   Event,
   EventEmitter,
   ExtensionContext,
   languages,
   MarkdownString,
+  OverviewRulerLane,
   Range,
   TextDocument,
   window,
@@ -17,10 +21,16 @@ import {
 } from "vscode";
 import ip from "ip";
 import cidrRegex from "cidr-regex";
-type CodeLensFormat = "json" | "table";
+import { CIDRCodeAction } from "./code-action";
+import {
+  codeLensFormat,
+  isCodeLensEnabled,
+  isDecoratorEnabled,
+  isStrictEnabled,
+} from "./config";
 const cidrPattern = new RegExp(cidrRegex.v4(), "g");
 const COPY_COMMAND = "cidr-ip-range.copy";
-const packageName = "cidr-ip-range";
+export const INVALID_RANGE_COMMAND = "cidr-ip-range.invalid-range";
 const rangeDecoration = window.createTextEditorDecorationType({
   after: {
     color: "#333",
@@ -28,6 +38,16 @@ const rangeDecoration = window.createTextEditorDecorationType({
     contentText: "",
   },
 });
+const invalidRangeDecoration = window.createTextEditorDecorationType({
+  borderWidth: "1px",
+  borderStyle: "dotted",
+  overviewRulerColor: "red",
+  overviewRulerLane: OverviewRulerLane.Right,
+  light: { borderColor: "lightred" },
+  dark: { borderColor: "darkred" },
+});
+const diagnostics: DiagnosticCollection =
+  languages.createDiagnosticCollection("cidr-ip-range");
 const header = `
 | | |
 |-|-|
@@ -67,11 +87,14 @@ const onUpdate = (): CodeLens[] => {
   const doc = window.activeTextEditor.document;
   const text = doc.getText();
   const decorations: DecorationOptions[] = [];
+  const invalidDecorations: DecorationOptions[] = [];
   const codelenses: CodeLens[] = [];
+  const diagnosticEntries: Diagnostic[] = [];
 
   let match;
   while ((match = cidrPattern.exec(text))) {
     const cidr = match[0];
+    const [ipAddress, subnet] = cidr.split("/");
     const startPos = doc.positionAt(match.index);
     const endPos = doc.positionAt(match.index + cidr.length);
     const {
@@ -102,7 +125,7 @@ const onUpdate = (): CodeLens[] => {
     const s = length === 1 ? "" : "es";
     const range = new Range(startPos, endPos);
 
-    const renderOptions = {
+    const renderOptions: DecorationOptions["renderOptions"] = {
       after: {
         color: "#666",
         contentText: ` [${length} address${s}]`,
@@ -114,6 +137,16 @@ const onUpdate = (): CodeLens[] => {
       hoverMessage: hover,
       renderOptions: isDecoratorEnabled() ? renderOptions : undefined,
     });
+
+    if (isStrictEnabled() && ipAddress !== networkAddress) {
+      const diagnostic = new Diagnostic(
+        range,
+        `CIDR notation must use the first address in the range i.e. ${networkAddress}/${subnet}`,
+        DiagnosticSeverity.Warning
+      );
+      diagnostic.code = INVALID_RANGE_COMMAND;
+      diagnosticEntries.push(diagnostic);
+    }
 
     if (isCodeLensEnabled() && codeLensFormat() === "table") {
       codelenses.push({
@@ -162,7 +195,12 @@ Subnet mask ${subnetMask}`,
     }
   }
 
+  diagnostics.set(doc.uri, diagnosticEntries);
   window.activeTextEditor.setDecorations(rangeDecoration, decorations);
+  window.activeTextEditor.setDecorations(
+    invalidRangeDecoration,
+    invalidDecorations
+  );
   clearDebounce();
   return codelenses;
 };
@@ -175,28 +213,21 @@ export function activate(context: ExtensionContext) {
     "*",
     codeLensProvider
   );
+  const codeActionsProvider = languages.registerCodeActionsProvider(
+    "*",
+    new CIDRCodeAction()
+  );
   const copyAction = commands.registerCommand(COPY_COMMAND, (payload) => {
     env.clipboard.writeText(payload);
   });
   context.subscriptions.push(
     onDocumentChangeSubscription,
     copyAction,
+    codeActionsProvider,
     codeLensSubscription
   );
   debounceCallback();
 }
-
-const isCodeLensEnabled = (): boolean => {
-  return workspace.getConfiguration(packageName).get("enableCodeLens", false);
-};
-
-const isDecoratorEnabled = (): boolean => {
-  return workspace.getConfiguration(packageName).get("enableDecorator", true);
-};
-
-const codeLensFormat = (): CodeLensFormat => {
-  return workspace.getConfiguration(packageName).get("codeLensFormat", "json");
-};
 
 export class CidrCodelensProvider implements CodeLensProvider {
   private regex: RegExp;
