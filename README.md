@@ -116,3 +116,7 @@ Fixed configuration options defaults and removed typo in copy to table
 ### 0.0.8
 
 Added strict mode, suggested by makeacode
+
+### 0.0.9
+
+Reformatted to show host range and address range separately, suggested by Ernests Auzins

@@ -104,8 +104,11 @@ const onUpdate = (): CodeLens[] => {
       { key: "Network address", value: networkAddress },
       { key: "Addresses in range", value: String(length) },
       { key: "Hosts in range", value: String(numHosts) },
-      { key: "First host in range", value: firstAddress },
-      { key: "Last host in range", value: lastAddress },
+      {
+        key: "Address range",
+        value: `[${networkAddress} - ${broadcastAddress}]`,
+      },
+      { key: "Host range", value: `[${firstAddress} - ${lastAddress}]` },
       { key: "Broadcast address", value: broadcastAddress },
       { key: "Subnet mask", value: subnetMask },
     ];
